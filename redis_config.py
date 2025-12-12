@@ -1,12 +1,12 @@
-from redis import Redis, ConnectionPool
+from redis import asyncio
 from config import settings
 
-pool = ConnectionPool(
+pool = asyncio.ConnectionPool(
     host=settings.REDIS_HOST,
     port=settings.REDIS_PORT,
     db=settings.REDIS_DB,
 )
 
 
-def get_redis_connection():
-    return Redis(connection_pool=pool)
+async def get_redis_connection():
+    return await asyncio.Redis(connection_pool=pool)
