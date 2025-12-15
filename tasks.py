@@ -1,11 +1,11 @@
 from celery_app import celery_app
 import os
+from whisper import transcribe
 
 
 @celery_app.task
 def transcribe_file(path: str):
-    #  run whisper
-    transcription = "Placeholder text"
+    transcription = transcribe(path)
     os.remove(path)
     return transcription
 

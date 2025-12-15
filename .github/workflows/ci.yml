@@ -12,7 +12,7 @@ jobs:
       redis:
         image: redis:alpine
         ports:
-          - 6379
+          - 6380:6379
 
     runs-on: ubuntu-latest
     steps:
@@ -26,6 +26,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Run tests
+        env:
+          REDIS_HOST: localhost
+          REDIS_PORT: 6380
         run: |
           pytest
   lint:

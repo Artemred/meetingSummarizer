@@ -2,6 +2,7 @@ from pytest import fixture
 from main import app
 from httpx import AsyncClient, ASGITransport
 from celery_app import celery_app
+from unittest.mock import patch
 
 
 @fixture
@@ -32,9 +33,11 @@ async def test_placeholder_view(client):
 
 
 async def test_tasks_chain(client):
-    res = await client.post("/create-session/", files={
-        "file": ("report.txt", b"Placeholder", "text/plain")
-    })
+    with patch("tasks.transcribe_file") as mock_transcribe:
+        mock_transcribe.return_value = "transcription result"
+        res = await client.post("/create-session/", files={
+            "file": ("report.txt", b"Placeholder", "text/plain")
+        })
     assert res.status_code == 200
     uid = res.json()["id"]
     res = await client.get(f"/session/{uid}")
