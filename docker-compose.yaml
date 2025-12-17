@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+    backend:
+        env_file: .env
+        environment:
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
+            - WHISPER_HOST=whisper
+            - WHISPER_PORT=8000
+            - SUMMARIZATION_HOST=ollama
+            - SUMMARIZATION_PORT=11434
+            - MODEL_NAME=model7
+        build: .
+        ports:
+            - "8000:8000"
+        volumes:
+            - .:/app
+            - ./uploads:/app/uploads
+        depends_on:
+            - redis
+    
+    celery:
+        build: .
+        command: celery -A celery_app:celery_app worker --loglevel=info
+        env_file: .env
+        environment:
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
+            - WHISPER_HOST=whisper
+            - WHISPER_PORT=8000
+            - SUMMARIZATION_HOST=ollama
+            - SUMMARIZATION_PORT=11434
+            - MODEL_NAME=model7
+        depends_on:
+            - redis
+        volumes:
+            - .:/app
+            - ./uploads:/app/uploads
+    
+    redis:
+        image: redis:alpine
+        container_name: redis
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis_data:/data
+    
+    ollama:
+        build:
+          context: ./ai/summarizer_deploy
+          dockerfile: Dockerfile
+          args:
+              GGUF_FILE: qwen2.5-7b-finetuned.gguf 
+              MODEL_NAME: model7
+        ports:
+          - "11434:11434"
+        volumes:
+          - ollama_data:/root/.ollama
+        deploy:
+          resources:
+            reservations:
+              devices:
+                - driver: nvidia
+                  count: 1
+                  capabilities: [gpu]
+    
+    whisper:
+        image: fedirz/faster-whisper-server:0.6.0-rc.3-cpu
+        container_name: whisper_service
+        restart: always
+        ports:
+        - "9090:8000"
+        environment:
+        - WHISPER_MODEL=small
+        volumes:
+        - whisper_cache:/root/.cache/huggingface
+
+volumes:
+  redis_data:
+  ollama_data:
+  whisper_cache:
