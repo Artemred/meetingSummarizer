@@ -29,15 +29,6 @@ model = genai.GenerativeModel(
     generation_config=generation_config,
 )
 
-"""
-try:
-    for m in genai.list_models():
-        if 'generateContent' in m.supported_generation_methods:
-            print(f"Name: {m.name}")
-            print(f"Show name: {m.display_name}")
-            print("-" * 30)
-"""
-
 BASE_PROMPT = """
 You are a synthetic data generator for Fine-Tuning Qwen 2.5.
 Your task is to generate 10 unique training examples in JSONL format based on the topic: "{topic}".
@@ -105,8 +96,8 @@ def generate_batch(batch_index):
                     f.write(json.dumps(item, ensure_ascii=False) + "\n")
 
     except Exception as e:
-    	print(e)
-    	time.sleep(5)
+        print(e)
+        time.sleep(5)
 
 
 if __name__ == "__main__":

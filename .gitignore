@@ -1,6 +1,6 @@
 **/__pycache__
 venv
-*.env
+.env
 *.gguf
 *.jsonl
 /uploads
