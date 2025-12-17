@@ -9,6 +9,9 @@ class Settings(BaseSettings):
     FILE_UPLOAD_DIR: str = "uploads"
     WHISPER_HOST: str = "localhost"
     WHISPER_PORT: int = 9090
+    SUMMARIZATION_HOST: str = "localhost"
+    SUMMARIZATION_PORT: int = 11434
+    MODEL_NAME: str = "model7"
 
 
 settings = Settings()
