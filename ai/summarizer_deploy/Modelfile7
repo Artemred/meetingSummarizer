@@ -1,0 +1,17 @@
+FROM ./qwen2.5-7b-finetuned.gguf
+
+TEMPLATE """{{ if .System }}<|im_start|>system
+{{ .System }}<|im_end|>
+{{ end }}{{ if .Prompt }}<|im_start|>user
+{{ .Prompt }}<|im_end|>
+{{ end }}<|im_start|>assistant
+"""
+
+SYSTEM "You are a professional editor. Your task is to read the raw transcript, ignore recognition errors, write a concise summary, AND PINPOINT TASKS TO DO in the end."
+
+PARAMETER temperature 0.1
+PARAMETER num_ctx 8192
+
+PARAMETER stop "<|im_end|>"
+PARAMETER stop "<|im_start|>"
+

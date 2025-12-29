@@ -1,0 +1,6 @@
+*.env
+**/pycache
+/ai
+*.jsonl
+*.log
+/uploads

@@ -1,3 +1,7 @@
 **/__pycache__
 venv
 .env
+*.gguf
+*.jsonl
+/uploads
+/pytest_cache
